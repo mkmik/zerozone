@@ -71,8 +71,13 @@ func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r 
 	state.Zone = domain
 
 	comp := dns.SplitDomainName(strings.TrimSuffix(qname, domain))
-	hash := comp[len(comp)-1]
 
+	// allow falling through
+	if len(comp) == 0 {
+		return plugin.NextOrFailure(h.Name(), h.Next, ctx, w, r)
+	}
+
+	hash := comp[len(comp)-1]
 	rs, err := h.Shell.Cat(hash)
 	if err != nil {
 		return dns.RcodeServerFailure, err
