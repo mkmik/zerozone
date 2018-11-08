@@ -6,10 +6,11 @@ import (
 	"log"
 	"strings"
 
-  _ "github.com/coredns/coredns/plugin/forward"
-    _ "github.com/coredns/coredns/plugin/log"
-    _ "github.com/coredns/coredns/plugin/errors"
+	_ "github.com/bitnami-labs/zerozone/zerodns/zerozone"
 
+	_ "github.com/coredns/coredns/plugin/errors"
+	_ "github.com/coredns/coredns/plugin/forward"
+	_ "github.com/coredns/coredns/plugin/log"
 
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/coremain"
@@ -19,6 +20,10 @@ import (
 var (
 	ipfsAddr = flag.String("api", "/ip4/127.0.0.1/tcp/5001", "ipfs API server")
 )
+
+func init() {
+	dnsserver.Directives = append([]string{"zerozone"}, dnsserver.Directives...)
+}
 
 func run() error {
 	sh := shell.NewShell(*ipfsAddr)

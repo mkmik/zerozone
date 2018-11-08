@@ -23,7 +23,7 @@ require (
 	github.com/libp2p/go-libp2p-protocol v1.0.0 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.10.2 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
-	github.com/mholt/caddy v0.11.0 // indirect
+	github.com/mholt/caddy v0.11.0
 	github.com/miekg/dns v1.0.15 // indirect
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1 // indirect
 	github.com/minio/sha256-simd v0.0.0-20181005183134-51976451ce19 // indirect
