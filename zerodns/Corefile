@@ -1,6 +1,5 @@
-.:8053 {
-    forward . 8.8.8.8:53
-    zerozone
+foo.mkm.pub:8053 {
+    zerozone /ip4/127.0.0.1/tcp/5001
     prometheus localhost:9253
     errors
     log

@@ -1,0 +1,20 @@
+{
+   "records" : [
+      {
+         "rrdatas" : [
+            "10.20.30.40"
+         ],
+         "type" : "A",
+         "ttl" : 600,
+         "name" : "foo"
+      },
+      {
+         "type" : "TXT",
+         "rrdatas" : [
+            "yadda yadda"
+         ],
+         "name" : "_acme-challenge.foo",
+         "ttl" : 600
+      }
+   ]
+}
