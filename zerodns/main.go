@@ -15,7 +15,23 @@ import (
 )
 
 func init() {
-	dnsserver.Directives = append(dnsserver.Directives, "zerozone")
+	dnsserver.Directives = []string{
+		"metadata",
+		"tls",
+		"reload",
+		"root",
+		"debug",
+		"trace",
+		"health",
+		"pprof",
+		"prometheus",
+		"errors",
+		"log",
+		"dnstap",
+
+		"zerozone",
+		"file",
+	}
 }
 
 func run() error {
