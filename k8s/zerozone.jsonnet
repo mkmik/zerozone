@@ -18,6 +18,19 @@ local kube = import 'kube.libsonnet';
     },
   },
 
+  cfg: kube.ConfigMap('zerozone') + $.namespace {
+    data: {
+      Corefile: |||
+        0zone.mkm.pub:8053 {
+            zerozone /ip4/127.0.0.1/tcp/5001
+            prometheus localhost:9253
+            errors
+            log
+        }
+      |||,
+    },
+  },
+
   zerozone_server: kube.Deployment('zerozone-server') + $.namespace {
     spec+: {
       template+: {
@@ -28,9 +41,60 @@ local kube = import 'kube.libsonnet';
               ports_+: {
                 dns: { containerPort: 8053, protocol: 'UDP' },
               },
+              volumeMounts_+: {
+                cfg: {
+                  mountPath: '/Corefile',
+                  subPath: 'Corefile',
+                },
+              },
               resources+: {
                 requests+: { memory: '10Mi' },
               },
+            },
+          },
+          volumes_: +{
+            cfg: {
+              configMap: { name: 'zerozone' },
+            },
+          },
+        },
+
+      },
+    },
+  },
+
+  apiSvc: kube.Service('api') + $.namespace {
+    target_pod: $.ipfs.spec.template,
+    spec+: {
+      ports: [
+        { name: 'api', port: 5001 },
+      ],
+    },
+  },
+
+  // zerozone dns server will talk to this local ipfs node set in order to fetch zones
+  ipfs: kube.Deployment('ipfs') + $.namespace {
+    spec+: {
+      template+: {
+        spec+: {
+          containers_+: {
+            go_ipfs: kube.Container('go-ipfs') {
+              image: 'ipfs/go-ipfs:v0.4.18',
+              args: ['daemon', '--enable-namesys-pubsub', '--enable-pubsub-experiment'],
+              ports_+: {
+                api: { containerPort: 5001 },
+              },
+              volumeMounts_+: {
+                data: { mountPath: '/data/ipfs' },
+              },
+              resources+: {
+                requests+: { memory: '10Mi' },
+              },
+            },
+          },
+          volumes_: +{
+            data: {
+              emptyDir: {},
             },
           },
         },
