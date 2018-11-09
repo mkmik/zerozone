@@ -5,16 +5,18 @@ local kube = import 'kube.libsonnet';
   ns: kube.Namespace($.namespace.metadata.namespace),
 
   svc: kube.Service('zerozone') + $.namespace {
-    target_pod: $.zerozone_server.spec.template,
+    target_pod: $.zerozone.spec.template,
     port: 53,
     spec+: {
       type: 'LoadBalancer',
 
       // kube.Service failes to copy the protocol from the target_pod
       local sport = super.ports[0],
-      ports: [sport {
-        protocol: 'UDP',
-      }],
+      ports: [
+        sport {
+          protocol: 'UDP',
+        },
+      ],
     },
   },
 
@@ -31,7 +33,7 @@ local kube = import 'kube.libsonnet';
     },
   },
 
-  zerozone_server: kube.Deployment('zerozone-server') + $.namespace {
+  zerozone: kube.Deployment('zerozone') + $.namespace {
     spec+: {
       template+: {
         spec+: {
@@ -63,7 +65,7 @@ local kube = import 'kube.libsonnet';
     },
   },
 
-  apiSvc: kube.Service('api') + $.namespace {
+  ipfsSvc: kube.Service('ipfs') + $.namespace {
     target_pod: $.ipfs.spec.template,
     spec+: {
       ports: [
