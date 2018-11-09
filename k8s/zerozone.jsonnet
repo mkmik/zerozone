@@ -24,7 +24,7 @@ local kube = import 'kube.libsonnet';
     data: {
       Corefile: |||
         0zone.mkm.pub:8053 {
-            zerozone /dnsname/ipfs/tcp/5001
+            zerozone ipfs:5001
             prometheus localhost:9253
             errors
             log
@@ -37,7 +37,22 @@ local kube = import 'kube.libsonnet';
     spec+: {
       template+: {
         spec+: {
+          default_container: 'zerozone_server',
           containers_+: {
+            debug: kube.Container('debug') {
+              image: 'ubuntu',
+              args: ['/bin/sleep', '10000000'],
+              volumeMounts_+: {
+                cfg: {
+                  mountPath: '/Corefile',
+                  subPath: 'Corefile',
+                },
+              },
+              resources+: {
+                requests+: { memory: '10Mi' },
+              },
+            },
+
             zerozone_server: kube.Container('zerozone-server') {
               image: 'mkmik/zerozone-server@sha256:24d8f8935c17f8b2f3283b263a666d8adfeab5ffe395de31ffef73a06c1065ee',
               ports_+: {
