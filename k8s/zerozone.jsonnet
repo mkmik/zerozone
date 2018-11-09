@@ -24,7 +24,7 @@ local kube = import 'kube.libsonnet';
     data: {
       Corefile: |||
         0zone.mkm.pub:8053 {
-            zerozone /ip4/127.0.0.1/tcp/5001
+            zerozone /dnsname/ipfs/tcp/5001
             prometheus localhost:9253
             errors
             log
