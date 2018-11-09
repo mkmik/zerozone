@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	_ "github.com/bitnami-labs/zerozone/zerodns/zerozone"
+	_ "github.com/bitnami-labs/zerozone/pkg/coredns/zerozone"
 
 	_ "github.com/coredns/coredns/plugin/errors"
 	_ "github.com/coredns/coredns/plugin/forward"
