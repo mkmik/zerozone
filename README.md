@@ -12,7 +12,7 @@ $ dig A foo.bafybeib3u2yfpkoticclpzwcrwkjzc4hlqwpttohhqlmf55qdgk3hrutcm.0zone.mk
 10.20.30.40
 ```
 
-Zeo zones are not good looking. If you want a better looking name, or one you can choose yourself this tool is not for you.
+Zero zones are not good-looking. If you want a better looking name, or one you can choose yourself this tool is not for you.
 Whether zero zones are temporary is up to you: as long as the IPFS file gets served the zone is alive.
 
 The zone is then mapped as subdomain of 0zone.mkm.pub, using the base32 encoding
