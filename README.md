@@ -1,7 +1,7 @@
 Instructions:
 
 1. clone this outside of the GOPATH (so go modules work)
-2. cd server
+2. `cd cmd/server`
 3. `go build && ./server`
 
 In another shell:
