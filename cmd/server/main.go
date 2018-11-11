@@ -7,6 +7,7 @@ import (
 	_ "github.com/bitnami-labs/zerozone/pkg/coredns/zerozone"
 
 	_ "github.com/coredns/coredns/plugin/errors"
+	_ "github.com/coredns/coredns/plugin/file"
 	_ "github.com/coredns/coredns/plugin/forward"
 	_ "github.com/coredns/coredns/plugin/log"
 

@@ -1,0 +1,8 @@
+@   IN SOA 0zone.mkm.pub hostmaster.0zone.mkm.pub. (
+    2018111100 ; serial
+    3600       ; refresh
+    1800       ; retry
+    604800     ; expire
+    600 )      ; ttl
+
+	NS	0zone.ns.mkm.pub.

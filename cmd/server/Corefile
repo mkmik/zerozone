@@ -1,5 +1,6 @@
 0zone.mkm.pub:8053 {
     zerozone /ip4/127.0.0.1/tcp/5001
+    file 0zone.mkm.pub
     prometheus localhost:9253
     errors
     log
