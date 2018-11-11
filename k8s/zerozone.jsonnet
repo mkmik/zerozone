@@ -25,10 +25,21 @@ local kube = import 'kube.libsonnet';
       Corefile: |||
         0zone.mkm.pub:8053 {
             zerozone ipfs:5001
+            file /cfg/root.txt
             prometheus localhost:9253
             errors
             log
         }
+      |||,
+      'root.txt': |||
+        @   IN SOA 0zone.mkm.pub hostmaster.0zone.mkm.pub. (
+            2018111100 ; serial
+            3600       ; refresh
+            1800       ; retry
+            604800     ; expire
+            600 )      ; ttl
+
+            NS  0zone.ns.mkm.pub.
       |||,
     },
   },
@@ -44,9 +55,9 @@ local kube = import 'kube.libsonnet';
               args: ['/bin/sleep', '10000000'],
               volumeMounts_+: {
                 cfg: {
-                  mountPath: '/Corefile',
-                  subPath: 'Corefile',
+                  mountPath: '/cfg',
                 },
+
               },
               resources+: {
                 requests+: { memory: '10Mi' },
@@ -54,14 +65,14 @@ local kube = import 'kube.libsonnet';
             },
 
             zerozone_server: kube.Container('zerozone-server') {
-              image: 'mkmik/zerozone-server@sha256:24d8f8935c17f8b2f3283b263a666d8adfeab5ffe395de31ffef73a06c1065ee',
+              image: 'mkmik/zerozone-server@sha256:dd05ee3c95927cfcda2627a440e9f92565d64d36bd4eb7c8ba1893fa4bf3569d',
+              args: ['-conf', '/cfg/Corefile'],
               ports_+: {
                 dns: { containerPort: 8053, protocol: 'UDP' },
               },
               volumeMounts_+: {
                 cfg: {
-                  mountPath: '/Corefile',
-                  subPath: 'Corefile',
+                  mountPath: '/cfg',
                 },
               },
               resources+: {
@@ -75,7 +86,6 @@ local kube = import 'kube.libsonnet';
             },
           },
         },
-
       },
     },
   },
