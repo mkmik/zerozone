@@ -101,9 +101,32 @@ local kube = import 'kube.libsonnet';
 
   // zerozone dns server will talk to this local ipfs node set in order to fetch zones
   ipfs: kube.Deployment('ipfs') + $.namespace {
+    local this = self,
     spec+: {
       template+: {
         spec+: {
+          securityContext+: {
+            runAsNonRoot: true,  // should run as ipfs
+            fsGroup: 100,  // "users"
+            runAsUser: 1000,  // "ipfs"
+          },
+          initContainers_+:: {
+            config: kube.Container('config') {
+              image: this.spec.template.spec.containers_.go_ipfs.image,
+              command: ['sh', '-e', '-x', '-c', self.shcmd],
+              shcmd:: |||
+                echo "Executing init container"
+                test ! -e /data/ipfs/config || exit 0
+                echo "Continuing to initialize"
+                ipfs init --bits 4096 --empty-repo --profile server
+                
+                ipfs config -- "Addresses.API" "/ip4/0.0.0.0/tcp/5001"
+              |||,
+              volumeMounts_+: {
+                data: { mountPath: '/data/ipfs' },
+              },
+            },
+          },
           containers_+: {
             go_ipfs: kube.Container('go-ipfs') {
               image: 'ipfs/go-ipfs:v0.4.18',
