@@ -16,6 +16,7 @@ require (
 	github.com/google/uuid v1.0.0 // indirect
 	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645 // indirect
 	github.com/gxed/hashland v0.0.0-20180221191214-d9f6b97f8db2 // indirect
+	github.com/ipfs/go-cid v0.9.0
 	github.com/ipfs/go-ipfs-api v1.3.5
 	github.com/ipfs/go-ipfs-cmdkit v1.1.3 // indirect
 	github.com/libp2p/go-flow-metrics v0.2.0 // indirect
@@ -33,6 +34,7 @@ require (
 	github.com/mr-tron/base58 v1.1.0 // indirect
 	github.com/multiformats/go-multiaddr v1.3.0 // indirect
 	github.com/multiformats/go-multiaddr-net v1.6.3 // indirect
+	github.com/multiformats/go-multibase v0.3.0
 	github.com/multiformats/go-multihash v1.0.8 // indirect
 	github.com/opentracing/opentracing-go v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -42,6 +44,7 @@ require (
 	github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d // indirect
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72 // indirect
 	github.com/stretchr/testify v1.2.2 // indirect
+	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
 	github.com/whyrusleeping/tar-utils v0.0.0-20180509141711-8c6c8ba81d5c // indirect
 	golang.org/x/crypto v0.0.0-20181106171534-e4dc69e5b2fd // indirect
 	golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3 // indirect

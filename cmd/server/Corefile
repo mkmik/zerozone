@@ -4,4 +4,5 @@
     prometheus localhost:9253
     errors
     log
+    debug
 }

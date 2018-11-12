@@ -1,6 +1,6 @@
 # Zero Zone
 
-> This project is still in preparation. I'm moving this from 0zone.mkm.pub to a non-personal domain, and switching to IPNS
+> This project is still in preparation. I'm moving this from 0zone.mkm.pub to a non-personal domain
 
 Zero Zone is a Zero Conf public domain registrar. 
 
@@ -8,7 +8,7 @@ With Zero Zone, anybody can create a zone. Zero Zone is automation friendly; no 
 A zone is just a JSON file available via IPFS.
 
 ```
-$ dig A foo.bafybeib3u2yfpkoticclpzwcrwkjzc4hlqwpttohhqlmf55qdgk3hrutcm.0zone.mkm.pub +short
+$ dig A foo.bafybeihebkzwbf2en26r7gtpvmbowai7fgvkcvhwaczgehvgzmghfyzvcq.0zone.mkm.pub +short
 10.20.30.40
 ```
 
@@ -22,7 +22,9 @@ The JSON zone format reuses Google's Cloud DNS [format](https://cloud.google.com
 for no other reason except that the authors didn't yet find a better standard (suggestions accepted) and this was easy to parse.
 
 ```
-$ ipfs cat /ipfs/bafybeib3u2yfpkoticclpzwcrwkjzc4hlqwpttohhqlmf55qdgk3hrutcm
+$ echo bafybeihebkzwbf2en26r7gtpvmbowai7fgvkcvhwaczgehvgzmghfyzvcq | cid format -b base58btc -v 0
+Qmdgq8Q6zSty3kqQhNnCzEecYKQRimjs4dpALoPo9oyA8T
+$ ipfs cat /ipns/Qmdgq8Q6zSty3kqQhNnCzEecYKQRimjs4dpALoPo9oyA8T
 {
    "records" : [
       {
@@ -65,9 +67,9 @@ These instructions assume a IPFS node running on localhost.
 You can try it out in another shell:
 
 ```
-$ dig  @127.0.0.1 -p 8053 A foo.bafybeib3u2yfpkoticclpzwcrwkjzc4hlqwpttohhqlmf55qdgk3hrutcm.0zone.mkm.pub +short
+$ dig  @127.0.0.1 -p 8053 A foo.bafybeihebkzwbf2en26r7gtpvmbowai7fgvkcvhwaczgehvgzmghfyzvcq.0zone.mkm.pub +short
 10.20.30.40
-$ dig  @127.0.0.1 -p 8053 A foo.bafybeidz2eomuhekgmhwnoxawruyrbrn6yg23p72qswsa5kicegoydzq4q.0zone.mkm.pub +short
+$ dig  @127.0.0.1 -p 8053 A foo.bafybeihumd6kyjmghotygjnrgzsyiukyjyrgzticnnf5z7eoeep563eiti.0zone.mkm.pub +short
 4.3.2.1
 ```
 
@@ -77,6 +79,4 @@ PRs accepted.
 
 Main TODOs:
 
-1. switch to /ipns. this now hosts only immutable /ipfs hashes (for speed of iterating locally)
-2. make sure plugin chaining works so we can serve static NS records alongside the dynamic plugin
-3. build docker image and deploy somewhere public (I'm preparing 0zone.mkm.pub for now)
+1. build docker image and deploy somewhere public (I'm preparing 0zone.mkm.pub for now)
