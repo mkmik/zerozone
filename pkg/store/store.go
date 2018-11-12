@@ -1,3 +1,4 @@
+// Package store abstracts access to zero config zones.
 package store
 
 import (
