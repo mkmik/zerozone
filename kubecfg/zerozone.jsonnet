@@ -29,6 +29,7 @@ local kube = import 'kube.libsonnet';
             prometheus localhost:9253
             errors
             log
+            debug
         }
       |||,
       'root.txt': |||
