@@ -49,6 +49,14 @@ func setup(c *caddy.Controller) error {
 
 func (h *ZeroZoneHandler) Name() string { return "zerozone" }
 
+func parseQuery(qname, domain string) (hostname, zoneID string, ok bool) {
+	comp := dns.SplitDomainName(strings.TrimSuffix(qname, domain))
+	if len(comp) == 0 {
+		return "", "", false
+	}
+	return strings.Join(comp[:len(comp)-1], "."), comp[len(comp)-1], true
+}
+
 func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
 	state := request.Request{W: w, Req: r, Context: ctx}
 
@@ -60,19 +68,17 @@ func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r 
 	}
 	state.Zone = domain
 
-	comp := dns.SplitDomainName(strings.TrimSuffix(qname, domain))
+	hostname, zoneID, ok := parseQuery(qname, domain)
 
 	// allow falling through
-	if len(comp) == 0 {
+	if !ok {
 		return plugin.NextOrFailure(h.Name(), h.Next, ctx, w, r)
 	}
 
-	zone, err := h.Fetcher.FetchZone(comp[len(comp)-1])
+	zone, err := h.Fetcher.FetchZone(zoneID)
 	if err != nil {
 		return dns.RcodeServerFailure, plugin.Error("zerozone", err)
 	}
-
-	key := strings.Join(comp[:len(comp)-1], ".")
 
 	m := new(dns.Msg)
 	m.SetReply(r)
@@ -80,7 +86,7 @@ func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r 
 	for _, rr := range zone.Records {
 		hdr := dns.RR_Header{Name: qname, Rrtype: state.QType(), Class: dns.ClassINET, Ttl: rr.TTL}
 
-		if key == rr.Name && state.Type() == rr.Type {
+		if hostname == rr.Name && state.Type() == rr.Type {
 			for _, d := range rr.RRDatas {
 				var ans dns.RR
 				switch state.QType() {
