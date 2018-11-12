@@ -1,3 +1,4 @@
+// package zerozone is a coredns plugin that serves Zero Zones.
 package zerozone
 
 import (
@@ -7,6 +8,7 @@ import (
 	"net"
 	"strings"
 
+	"github.com/bitnami-labs/zerozone/pkg/model"
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
 	"github.com/coredns/coredns/plugin/pkg/log"
@@ -18,21 +20,11 @@ import (
 	multibase "github.com/multiformats/go-multibase"
 )
 
+// ZeroZoneHandler implemens that coredns plugin handler.
 type ZeroZoneHandler struct {
 	Domain string
 	Shell  *shell.Shell
 	Next   plugin.Handler
-}
-
-type Zone struct {
-	Records []Record `json:"records"`
-}
-
-type Record struct {
-	Name    string   `json:"name"`
-	Type    string   `json:"type"`
-	TTL     uint32   `json:"ttl"`
-	RRDatas []string `json:"rrdatas"`
 }
 
 func init() {
@@ -114,7 +106,7 @@ func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r 
 	}
 	defer rs.Close()
 
-	var zone Zone
+	var zone model.Zone
 	if err := json.NewDecoder(rs).Decode(&zone); err != nil {
 		return dns.RcodeServerFailure, plugin.Error("zerozone", err)
 	}
