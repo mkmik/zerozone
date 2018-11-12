@@ -3,28 +3,22 @@ package zerozone
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"net"
 	"strings"
 
-	"github.com/bitnami-labs/zerozone/pkg/model"
+	"github.com/bitnami-labs/zerozone/pkg/store"
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
-	"github.com/coredns/coredns/plugin/pkg/log"
 	"github.com/coredns/coredns/request"
-	"github.com/ipfs/go-cid"
-	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/mholt/caddy"
 	"github.com/miekg/dns"
-	multibase "github.com/multiformats/go-multibase"
 )
 
 // ZeroZoneHandler implemens that coredns plugin handler.
 type ZeroZoneHandler struct {
-	Domain string
-	Shell  *shell.Shell
-	Next   plugin.Handler
+	Domain  string
+	Fetcher store.Fetcher
+	Next    plugin.Handler
 }
 
 func init() {
@@ -44,9 +38,9 @@ func setup(c *caddy.Controller) error {
 	cfg := dnsserver.GetConfig(c)
 	dnsserver.GetConfig(c).AddPlugin(func(next plugin.Handler) plugin.Handler {
 		return &ZeroZoneHandler{
-			Domain: cfg.Zone,
-			Shell:  shell.NewShell(ipfsNodeAddr),
-			Next:   next,
+			Domain:  cfg.Zone,
+			Fetcher: store.NewIPNSFetcher(ipfsNodeAddr),
+			Next:    next,
 		}
 	})
 
@@ -54,29 +48,6 @@ func setup(c *caddy.Controller) error {
 }
 
 func (h *ZeroZoneHandler) Name() string { return "zerozone" }
-
-func ipnsAddr(hash string) (string, error) {
-	// ipns addresses cannot yet be V1 cid addresses.
-	legacy, err := toLegacyBase58(hash)
-	if err != nil {
-		return "", err
-	}
-
-	addr := fmt.Sprintf("/ipns/%s", legacy)
-	log.Debugf("addr %s", addr)
-	return addr, nil
-}
-
-func toLegacyBase58(hash string) (string, error) {
-	log.Debugf("parsing cid %q", hash)
-	v1id, err := cid.Decode(hash)
-	if err != nil {
-		return "", err
-	}
-	v0id := cid.NewCidV0(v1id.Hash())
-	return v0id.Encode(multibase.MustNewEncoder(multibase.Base58BTC)), nil
-
-}
 
 func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
 	state := request.Request{W: w, Req: r, Context: ctx}
@@ -96,20 +67,11 @@ func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r 
 		return plugin.NextOrFailure(h.Name(), h.Next, ctx, w, r)
 	}
 
-	zoneAddr, err := ipnsAddr(comp[len(comp)-1])
+	zone, err := h.Fetcher.FetchZone(comp[len(comp)-1])
 	if err != nil {
 		return dns.RcodeServerFailure, plugin.Error("zerozone", err)
 	}
-	rs, err := h.Shell.Cat(zoneAddr)
-	if err != nil {
-		return dns.RcodeServerFailure, plugin.Error("zerozone", err)
-	}
-	defer rs.Close()
 
-	var zone model.Zone
-	if err := json.NewDecoder(rs).Decode(&zone); err != nil {
-		return dns.RcodeServerFailure, plugin.Error("zerozone", err)
-	}
 	key := strings.Join(comp[:len(comp)-1], ".")
 
 	m := new(dns.Msg)
