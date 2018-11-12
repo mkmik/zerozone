@@ -115,7 +115,6 @@ local kube = import 'kube.libsonnet';
               image: this.spec.template.spec.containers_.go_ipfs.image,
               command: ['sh', '-e', '-x', '-c', self.shcmd],
               shcmd:: |||
-                echo "Executing init container"
                 test ! -e /data/ipfs/config || exit 0
                 echo "Continuing to initialize"
                 ipfs init --bits 4096 --empty-repo --profile server
