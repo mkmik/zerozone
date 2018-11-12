@@ -65,9 +65,9 @@ These instructions assume a IPFS node running on localhost.
 You can try it out in another shell:
 
 ```
-$ dig  @127.0.0.1 -p 8053 A foo.bafybeib3u2yfpkoticclpzwcrwkjzc4hlqwpttohhqlmf55qdgk3hrutcm.foo.mkm.pub +short
+$ dig  @127.0.0.1 -p 8053 A foo.bafybeib3u2yfpkoticclpzwcrwkjzc4hlqwpttohhqlmf55qdgk3hrutcm.0zone.mkm.pub +short
 10.20.30.40
-$ dig  @127.0.0.1 -p 8053 A foo.bafybeidz2eomuhekgmhwnoxawruyrbrn6yg23p72qswsa5kicegoydzq4q.foo.mkm.pub +short
+$ dig  @127.0.0.1 -p 8053 A foo.bafybeidz2eomuhekgmhwnoxawruyrbrn6yg23p72qswsa5kicegoydzq4q.0zone.mkm.pub +short
 4.3.2.1
 ```
 
