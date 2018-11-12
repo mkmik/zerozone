@@ -39,7 +39,7 @@ func setup(c *caddy.Controller) error {
 	dnsserver.GetConfig(c).AddPlugin(func(next plugin.Handler) plugin.Handler {
 		return &ZeroZoneHandler{
 			Domain:  cfg.Zone,
-			Fetcher: store.NewIPNSFetcher(ipfsNodeAddr),
+			Fetcher: store.NewSingleFlightFetcher(store.NewIPNSFetcher(ipfsNodeAddr)),
 			Next:    next,
 		}
 	})

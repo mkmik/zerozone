@@ -46,11 +46,12 @@ require (
 	github.com/stretchr/testify v1.2.2 // indirect
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
 	github.com/whyrusleeping/tar-utils v0.0.0-20180509141711-8c6c8ba81d5c // indirect
+	go4.org v0.0.0-20181109185143-00e24f1b2599
 	golang.org/x/crypto v0.0.0-20181106171534-e4dc69e5b2fd // indirect
 	golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3 // indirect
 	golang.org/x/net v0.0.0-20181108082009-03003ca0c849 // indirect
 	golang.org/x/oauth2 v0.0.0-20181106182150-f42d05182288 // indirect
-	golang.org/x/sync v0.0.0-20181108010431-42b317875d0f // indirect
+	golang.org/x/sync v0.0.0-20181108010431-42b317875d0f
 	golang.org/x/sys v0.0.0-20181107165924-66b7b1311ac8 // indirect
 	golang.org/x/tools v0.0.0-20181107225058-a28dfb48e06b // indirect
 	google.golang.org/appengine v1.3.0 // indirect
