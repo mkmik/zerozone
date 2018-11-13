@@ -1,8 +1,6 @@
 package store
 
 import (
-	"time"
-
 	"github.com/bitnami-labs/zerozone/pkg/model"
 	"github.com/coredns/coredns/plugin/pkg/log"
 	"golang.org/x/sync/singleflight"
