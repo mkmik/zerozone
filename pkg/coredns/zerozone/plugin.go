@@ -36,12 +36,14 @@ func setup(c *caddy.Controller) error {
 		return plugin.Error("zerozone", c.ArgErr())
 	}
 
+	// fetcher := store.NewIPNSFetcher(ipfsNodeAddr)
+	fetcher := store.NewIPNSGatewayFetcher("https://ipfs.io")
+
 	cfg := dnsserver.GetConfig(c)
 	dnsserver.GetConfig(c).AddPlugin(func(next plugin.Handler) plugin.Handler {
 		return &ZeroZoneHandler{
-			Domain: cfg.Zone,
-			//	Fetcher: store.NewSingleFlightFetcher(store.NewIPNSFetcher(ipfsNodeAddr)),
-			Fetcher: store.NewSingleFlightFetcher(store.NewCachingFetcher(store.NewSingleFlightFetcher(store.NewIPNSGatewayFetcher("https://ipfs.io")))),
+			Domain:  cfg.Zone,
+			Fetcher: store.NewSingleFlightFetcher(store.NewCachingFetcher(fetcher)),
 			Next:    next,
 		}
 	})
