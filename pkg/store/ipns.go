@@ -76,6 +76,10 @@ func (f *IPNSGatewayFetcher) FetchZone(id string) (*model.Zone, error) {
 		return nil, err
 	}
 
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s: %q", resp.Status, string(b))
+	}
+
 	var zone model.Zone
 	if err := json.Unmarshal(b, &zone); err != nil {
 		log.Debugf("got error %v while parsing %q", err, string(b))
