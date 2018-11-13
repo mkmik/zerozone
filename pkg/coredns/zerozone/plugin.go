@@ -94,26 +94,27 @@ func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r 
 	for _, rr := range zone.Records {
 		hdr := dns.RR_Header{Name: qname, Rrtype: state.QType(), Class: dns.ClassINET, Ttl: rr.TTL}
 
-		if hostname == rr.Name && state.Type() == rr.Type {
+		if hostname == rr.Name && (state.Type() == rr.Type || (state.QType() == dns.TypeA && rr.Type == "CNAME")) {
 			for _, d := range rr.RRDatas {
 				var ans dns.RR
-				switch t := state.QType(); t {
-				case dns.TypeA:
+				switch t := rr.Type; t {
+				case "A":
 					ans = &dns.A{
 						Hdr: hdr,
 						A:   net.ParseIP(d),
 					}
-				case dns.TypeAAAA:
+				case "AAAA":
 					ans = &dns.AAAA{
 						Hdr:  hdr,
 						AAAA: net.ParseIP(d),
 					}
-				case dns.TypeCNAME:
+				case "CNAME":
+					hdr.Rrtype = dns.TypeCNAME
 					ans = &dns.CNAME{
 						Hdr:    hdr,
 						Target: d,
 					}
-				case dns.TypeTXT:
+				case "TXT":
 					ans = &dns.TXT{
 						Hdr: hdr,
 						Txt: split255(d),
