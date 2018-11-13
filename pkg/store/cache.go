@@ -5,6 +5,7 @@ import (
 
 	"github.com/bitnami-labs/zerozone/pkg/model"
 	"github.com/coredns/coredns/plugin/pkg/log"
+	"golang.org/x/sync/singleflight"
 )
 
 // CachingFetcher is a simple stupid in memory cache that unconditionally returns
@@ -12,6 +13,7 @@ import (
 type CachingFetcher struct {
 	fetcher Fetcher
 	cache   sync.Map
+	group   singleflight.Group
 }
 
 // NewCachingFetcher creates a new caching fetcher
@@ -31,9 +33,12 @@ func (f *CachingFetcher) FetchZone(id string) (*model.Zone, error) {
 }
 
 func (f *CachingFetcher) refresh(id string) {
-	if _, err := f.savingFetchZone(id); err != nil {
-		log.Errorf("failed to refresh cache for %q: %v", id, err)
-	}
+	f.group.Do(id, func() (interface{}, error) {
+		if _, err := f.savingFetchZone(id); err != nil {
+			log.Errorf("failed to refresh cache for %q: %v", id, err)
+		}
+		return nil, nil
+	})
 }
 
 func (f *CachingFetcher) savingFetchZone(id string) (*model.Zone, error) {
