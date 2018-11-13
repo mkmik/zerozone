@@ -3,6 +3,7 @@ package store
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/bitnami-labs/zerozone/pkg/model"
@@ -70,8 +71,14 @@ func (f *IPNSGatewayFetcher) FetchZone(id string) (*model.Zone, error) {
 	}
 	defer rs.Body.Close()
 
+	b, err := ioutil.ReadAll(rs.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	var zone model.Zone
-	if err := json.NewDecoder(rs.Body).Decode(&zone); err != nil {
+	if err := json.Unmarshal(b, &zone); err != nil {
+		log.Debugf("got error %v while parsing %q", err, string(b))
 		return nil, err
 	}
 
