@@ -63,7 +63,6 @@ func initConfig() {
 
 		// Search config in home directory with name ".zeroed" (without extension).
 		viper.AddConfigPath(u.HomeDir)
-		fmt.Println("HHHHHHHHH", u.HomeDir)
 		viper.SetConfigName(".zeroed")
 	}
 
