@@ -1,10 +1,12 @@
 package store
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/bitnami-labs/zerozone/pkg/model"
 	"github.com/coredns/coredns/plugin/pkg/log"
@@ -65,7 +67,16 @@ func (f *IPNSGatewayFetcher) FetchZone(id string) (*model.Zone, error) {
 
 	httpAddr := fmt.Sprintf("%s%s", f.gwAddr, zoneAddr)
 	log.Debugf("fetching from gw: %q", httpAddr)
-	rs, err := http.Get(httpAddr)
+
+	req, err := http.NewRequest("GET", httpAddr, nil)
+	if err != nil {
+		return nil, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	req = req.WithContext(ctx)
+
+	rs, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
