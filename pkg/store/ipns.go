@@ -76,8 +76,8 @@ func (f *IPNSGatewayFetcher) FetchZone(id string) (*model.Zone, error) {
 		return nil, err
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%s: %q", resp.Status, string(b))
+	if rs.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s: %q", rs.Status, string(b))
 	}
 
 	var zone model.Zone
