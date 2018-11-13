@@ -9,6 +9,7 @@ import (
 	"github.com/bitnami-labs/zerozone/pkg/store"
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
+	"github.com/coredns/coredns/plugin/pkg/log"
 	"github.com/coredns/coredns/request"
 	"github.com/mholt/caddy"
 	"github.com/miekg/dns"
@@ -89,7 +90,7 @@ func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r 
 		if hostname == rr.Name && state.Type() == rr.Type {
 			for _, d := range rr.RRDatas {
 				var ans dns.RR
-				switch state.QType() {
+				switch t := state.QType(); t {
 				case dns.TypeA:
 					ans = &dns.A{
 						Hdr: hdr,
@@ -100,11 +101,18 @@ func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r 
 						Hdr:  hdr,
 						AAAA: net.ParseIP(d),
 					}
+				case dns.TypeCNAME:
+					ans = &dns.CNAME{
+						Hdr:    hdr,
+						Target: d,
+					}
 				case dns.TypeTXT:
 					ans = &dns.TXT{
 						Hdr: hdr,
 						Txt: split255(d),
 					}
+				default:
+					log.Debugf("unhandled type %q", t)
 				}
 				m.Answer = append(m.Answer, ans)
 			}
