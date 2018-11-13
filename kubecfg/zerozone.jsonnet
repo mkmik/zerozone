@@ -66,7 +66,7 @@ local kube = import 'kube.libsonnet';
             },
 
             zerozone_server: kube.Container('zerozone-server') {
-              image: 'mkmik/zerozone-server@sha256:18fde40855eb2cb84645a320003326052aa9ca81a03f60f6d444a34c5404ff06',
+              image: 'mkmik/zerozone-server@sha256:58880a1488f74af994b180e2874627b34bda918f86ea2f7a185e78d180af2ac0',
               args: ['-conf', '/cfg/Corefile'],
               ports_+: {
                 dns: { containerPort: 8053, protocol: 'UDP' },
