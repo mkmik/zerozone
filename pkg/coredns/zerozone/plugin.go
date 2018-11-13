@@ -41,7 +41,7 @@ func setup(c *caddy.Controller) error {
 		return &ZeroZoneHandler{
 			Domain: cfg.Zone,
 			//	Fetcher: store.NewSingleFlightFetcher(store.NewIPNSFetcher(ipfsNodeAddr)),
-			Fetcher: store.NewSingleFlightFetcher(store.NewCachingFetcher(store.NewIPNSGatewayFetcher("https://ipfs.io"))),
+			Fetcher: store.NewSingleFlightFetcher(store.NewCachingFetcher(store.NewSingleFlightFetcher(store.NewIPNSGatewayFetcher("https://ipfs.io")))),
 			Next:    next,
 		}
 	})
