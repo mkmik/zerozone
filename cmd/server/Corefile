@@ -1,8 +1,17 @@
-0zone.mkm.pub:8053 {
-    zerozone /ip4/127.0.0.1/tcp/5001
+(zerozone) {
     file 0zone.mkm.pub
     prometheus localhost:9253
     errors
     log
     debug
+}
+
+0zone.mkm.pub:8053 {
+    zerozone https://ipfs.io
+    import zerozone
+}
+
+0zone.mkm.pub:4053 {
+    zerozone /ip4/127.0.0.1/tcp/5001
+    import zerozone
 }
