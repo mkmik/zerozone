@@ -86,6 +86,8 @@ local kube = import 'kube.libsonnet';
               configMap: { name: 'zerozone' },
             },
           },
+          automountServiceAccountToken: false,
+          terminationGracePeriodSeconds: 1,
         },
       },
     },
@@ -119,7 +121,7 @@ local kube = import 'kube.libsonnet';
                 test ! -e /data/ipfs/config || exit 0
                 echo "Continuing to initialize"
                 ipfs init --bits 4096 --empty-repo --profile server
-                
+
                 ipfs config -- "Addresses.API" "/ip4/0.0.0.0/tcp/5001"
               |||,
               volumeMounts_+: {
