@@ -3,7 +3,8 @@ package model
 
 // Zone is a user's zone.
 type Zone struct {
-	Records []ResourceRecordSet `json:"records,omitempty"`
+	Generation int                 `json:"generation"`
+	Records    []ResourceRecordSet `json:"records,omitempty"`
 }
 
 // ResourceRecordSet is a unit of data that will be returned by the DNS servers.

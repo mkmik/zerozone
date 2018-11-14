@@ -42,6 +42,8 @@ func openZone(fileName string) (zone *model.Zone, save func() error, err error) 
 		defer f.Close()
 		enc := json.NewEncoder(f)
 		enc.SetIndent("", "  ")
+		
+		zone.Generation++
 		if err := enc.Encode(zone); err != nil {
 			return err
 		}
