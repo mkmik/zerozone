@@ -47,6 +47,15 @@ func (f *CachingFetcher) savingFetchZone(id string) (*model.Zone, error) {
 		return nil, err
 	}
 
+	// check if we fetched a stale version
+	if czi, ok := f.cache.Load(id); ok {
+		cz := czi.(*model.Zone)
+		if cz.Generation > z.Generation {
+			log.Debugf("fetched a stale zone (fetched gen %d, cached gen %d), not storing in cache", z.Generation, cz.Generation)
+			return cz, nil
+		}
+	}
+
 	log.Debugf("storing %q in cache", id)
 	f.cache.Store(id, z)
 	return z, nil
