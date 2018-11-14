@@ -13,3 +13,13 @@ type ResourceRecordSet struct {
 	TTL     uint32   `json:"ttl,omitempty"`
 	RRDatas []string `json:"rrdatas,omitempty"`
 }
+
+// FindRecord finds a record.
+func (z *Zone) FindRecord(name, typ string) (*ResourceRecordSet, bool) {
+	for i, r := range z.Records {
+		if r.Name == name && r.Type == typ {
+			return &z.Records[i], true
+		}
+	}
+	return nil, false
+}
