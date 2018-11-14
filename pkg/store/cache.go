@@ -56,7 +56,7 @@ func (f *CachingFetcher) savingFetchZone(id string) (*model.Zone, error) {
 		}
 	}
 
-	log.Debugf("storing %q in cache", id)
+	log.Debugf("storing %q (generation %d) in cache", z.Generation, id)
 	f.cache.Store(id, z)
 	return z, nil
 }
