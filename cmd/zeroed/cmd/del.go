@@ -24,16 +24,16 @@ var delCmd = &cobra.Command{
 		if recordData == "" {
 			r.RRDatas = nil
 		} else {
+			found := false
 			for i := range r.RRDatas {
-				found := false
 				if r.RRDatas[i] == recordData {
 					r.RRDatas = append(r.RRDatas[:i], r.RRDatas[i+1:]...)
 					found = true
 					break
 				}
-				if !found {
-					return fmt.Errorf("cannot find %q %q %q", recordName, recordType, recordData)
-				}
+			}
+			if !found {
+				return fmt.Errorf("cannot find %q %q %q", recordName, recordType, recordData)
 			}
 		}
 		if len(r.RRDatas) == 0 {
