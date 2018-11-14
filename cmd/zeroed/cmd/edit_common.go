@@ -13,6 +13,8 @@ var (
 	recordName string
 	recordType string
 	recordData string
+
+	noPublish bool
 )
 
 func registerEditFlags(cmd *cobra.Command) {
@@ -22,6 +24,8 @@ func registerEditFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&recordType, "type", "t", "", "Record type")
 	cmd.MarkFlagRequired("type")
 	cmd.Flags().StringVarP(&recordData, "data", "d", "", "record data")
+
+	cmd.Flags().BoolVar(&noPublish, "no-publish", false, "skip publishing to IPNS, but update local zone file")
 
 	viper.BindPFlag(fileCfg, cmd.Flags().Lookup(fileCfg))
 }

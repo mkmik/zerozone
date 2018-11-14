@@ -57,6 +57,10 @@ func updateZone(fileName string, zone *model.Zone) error {
 		return err
 	}
 
+	if noPublish {
+		return nil
+	}
+
 	f.Seek(0, 0)
 	return publishZone(f)
 }
