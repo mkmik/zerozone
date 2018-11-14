@@ -10,7 +10,9 @@ import (
 )
 
 const (
-	apiAddrCfg = "api"
+	apiAddrCfg        = "api"
+	pubKeyCfg         = "pubkey"
+	zeroZoneDomainCfg = "zeroZoneDomain"
 )
 
 var cfgFile string
@@ -35,6 +37,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.zeroed.yaml)")
 
 	rootCmd.PersistentFlags().String(apiAddrCfg, "/ip4/127.0.0.1/tcp/5001", "address of ipfs api server")
+	rootCmd.PersistentFlags().String(pubKeyCfg, "self", "pubkey name of hash")
+	rootCmd.PersistentFlags().String(zeroZoneDomainCfg, "0zone.mkm.pub", "domain name of the ZeroZone service")
 
 	viper.BindPFlags(rootCmd.PersistentFlags())
 }

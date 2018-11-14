@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/bitnami-labs/zerozone/pkg/model"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -39,6 +42,15 @@ var addCmd = &cobra.Command{
 		if !found {
 			r.RRDatas = append(r.RRDatas, recordData)
 		}
+
+		zoneName, err := getZoneName()
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Printf("%s.%s.%s\n", recordName, zoneName, viper.GetString(zeroZoneDomainCfg))
+		fmt.Fprintf(os.Stderr, "\n")
+
 		return save()
 	},
 }

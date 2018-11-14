@@ -2,9 +2,12 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/bitnami-labs/zerozone/pkg/model"
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -39,7 +42,20 @@ func openZone(fileName string) (zone *model.Zone, save func() error, err error) 
 		defer f.Close()
 		enc := json.NewEncoder(f)
 		enc.SetIndent("", "  ")
-		return enc.Encode(zone)
+		if err := enc.Encode(zone); err != nil {
+			return err
+		}
+
+		sh := shell.NewShell(viper.GetString(apiAddrCfg))
+		f.Seek(0, 0)
+		hash, err := sh.Add(f)
+		if err != nil {
+			return err
+		}
+		pubkey := viper.GetString(pubKeyCfg)
+		fmt.Fprintf(os.Stderr, "Publishing to IPNS\n")
+		_, err = sh.PublishWithDetails(hash, pubkey, 7*24*time.Hour, 30*time.Second, false)
+		return err
 	}
 
 	f, err := os.Open(fileName)
