@@ -1,0 +1,18 @@
+ARG GO_VERSION=1.11.2
+
+FROM golang:${GO_VERSION} AS builder
+
+WORKDIR /src
+COPY ./go.mod ./go.sum ./
+RUN go mod download
+
+COPY ./ ./
+RUN go build -ldflags="-s -w" -o /zeroed ./cmd/zeroed
+
+# distroless with busybox
+FROM ipfs/go-ipfs:v0.4.18
+
+COPY --from=builder /zeroed /bin/zeroed
+
+CMD ["daemon", "--enable-namesys-pubsub"]
+
