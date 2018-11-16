@@ -62,6 +62,4 @@ func init() {
 
 	addCmd.Flags().Uint32Var(&recordTTL, "ttl", 60, "record ttl")
 	addCmd.MarkFlagRequired("data")
-
-	viper.BindPFlag("file", addCmd.Flags().Lookup("file"))
 }

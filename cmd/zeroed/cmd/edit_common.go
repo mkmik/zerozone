@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 const (
@@ -26,6 +25,4 @@ func registerEditFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&recordData, "data", "d", "", "record data")
 
 	cmd.Flags().BoolVar(&noPublish, "no-publish", false, "skip publishing to IPNS, but update local zone file")
-
-	viper.BindPFlag(fileCfg, cmd.Flags().Lookup(fileCfg))
 }

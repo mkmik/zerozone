@@ -41,6 +41,9 @@ func init() {
 	rootCmd.PersistentFlags().String(zeroZoneDomainCfg, "0zone.mkm.pub", "domain name of the ZeroZone service")
 
 	viper.BindPFlags(rootCmd.PersistentFlags())
+	// BindPFlags flushes the binding so we cannot register command specific binding in the
+	// other init functions (which are executed before this)
+	viper.BindPFlag(fileCfg, addCmd.Flags().Lookup(fileCfg))
 }
 
 // initConfig reads in config file and ENV variables if set.
