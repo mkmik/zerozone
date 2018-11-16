@@ -14,5 +14,6 @@ FROM ipfs/go-ipfs:v0.4.18
 
 COPY --from=builder /zeroed /bin/zeroed
 
-CMD ["daemon", "--enable-namesys-pubsub"]
+RUN echo 'file: /data/ipfs/zone.json' >/root/.zeroed.yml
 
+CMD ["daemon", "--enable-namesys-pubsub"]
