@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/bitnami-labs/zerozone/pkg/model"
+	"github.com/miekg/dns"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -48,13 +49,41 @@ var addCmd = &cobra.Command{
 			return err
 		}
 		fmt.Fprintf(os.Stderr, "\n")
-		fmt.Printf("%s.%s.%s %d IN %s %s\n",
-			recordName, zoneName, viper.GetString(zeroZoneDomainCfg),
-			recordTTL, recordType, recordData)
+		fqdn := fmt.Sprintf("%s.%s.%s", recordName, zoneName, viper.GetString(zeroZoneDomainCfg))
+		fmt.Printf("%s %d IN %s %s\n", fqdn, recordTTL, recordType, recordData)
 		fmt.Fprintf(os.Stderr, "\n")
 
-		return save()
+		if err := save(); err != nil {
+			return err
+		}
+
+		return waitForRecord(fqdn, recordType, zoneName)
 	},
+}
+
+func waitForRecord(fqdn string, recordType string, zoneName string) error {
+	t, ok := dns.StringToType[recordType]
+	if !ok {
+		return fmt.Errorf("unknown record type %q", recordType)
+	}
+
+	fmt.Println("waiting until DNS server resolves our new record")
+
+	for {
+		m1 := new(dns.Msg)
+		m1.Id = dns.Id()
+		m1.RecursionDesired = true
+		m1.Question = make([]dns.Question, 1)
+		m1.Question[0] = dns.Question{fmt.Sprintf("%s.", fqdn), t, dns.ClassINET}
+
+		c := new(dns.Client)
+		in, _, err := c.Exchange(m1, "0zone.ns.mkm.pub:53")
+		if err == nil {
+			fmt.Println("record resolved")
+			fmt.Printf("%s\n", in)
+			return nil
+		}
+	}
 }
 
 func init() {
