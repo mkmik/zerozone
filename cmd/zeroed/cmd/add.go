@@ -48,7 +48,9 @@ var addCmd = &cobra.Command{
 			return err
 		}
 		fmt.Fprintf(os.Stderr, "\n")
-		fmt.Printf("%s.%s.%s\n", recordName, zoneName, viper.GetString(zeroZoneDomainCfg))
+		fmt.Printf("%s.%s.%s %d IN %s %s\n",
+			recordName, zoneName, viper.GetString(zeroZoneDomainCfg),
+			recordTTL, recordType, recordData)
 		fmt.Fprintf(os.Stderr, "\n")
 
 		return save()
