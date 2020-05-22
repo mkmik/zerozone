@@ -11,7 +11,7 @@ import (
 	"github.com/coredns/coredns/plugin"
 	"github.com/coredns/coredns/plugin/pkg/log"
 	"github.com/coredns/coredns/request"
-	"github.com/mholt/caddy"
+	"github.com/caddyserver/caddy"
 	"github.com/miekg/dns"
 )
 
@@ -66,7 +66,7 @@ func parseQuery(qname, domain string) (hostname, zoneID string, ok bool) {
 }
 
 func (h *ZeroZoneHandler) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
-	state := request.Request{W: w, Req: r, Context: ctx}
+	state := request.Request{W: w, Req: r}
 
 	qname := state.Name()
 
